@@ -1,0 +1,142 @@
+"use client"; // 添加客户端组件标记
+import styles from "./index.module.css";
+import React from "react";
+import { DownOutlined, SettingOutlined } from "@ant-design/icons";
+import type { MenuProps } from "antd";
+import Image from "next/image";
+import { Space, Layout as AntdLayout, Menu, theme, Dropdown } from "antd";
+import { useRouter } from "next/navigation";
+
+// 定义 Layout 组件的 Props 类型
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+const { Header, Content, Footer, Sider } = AntdLayout;
+
+// 左侧导航栏内容
+const ITEMS = [
+  {
+    // icon: React.createElement(icon),
+    key: `book`,
+    label: `图书管理`,
+    children: [
+      { key: `/book`, label: `图书列表` },
+      { key: `/book/add`, label: `图书添加` },
+    ],
+  },
+  {
+    // icon: React.createElement(icon),
+    key: `borrow`,
+    label: `借阅管理`,
+    children: [
+      { key: `/borrow`, label: `借阅列表` },
+      { key: `/borrow/add`, label: `借阅添加` },
+    ],
+  },
+  {
+    // icon: React.createElement(icon),
+    key: `category`,
+    label: `分类管理`,
+    children: [
+      { key: `/category`, label: `分类列表` },
+      { key: `/category/add`, label: `分类添加` },
+    ],
+  },
+  {
+    // icon: React.createElement(icon),
+    key: `user`,
+    label: `用户管理`,
+    children: [
+      { key: `/user`, label: `用户列表` },
+      { key: `/user/add`, label: `用户添加` },
+    ],
+  },
+];
+const USER_TIENM: MenuProps["items"] = [
+  {
+    label: "用户中心",
+    key: '1',
+  },
+  {
+    type: 'divider',
+  },
+  {
+    label: '登出',
+    key: '2',
+    // disabled: true,
+  },
+];
+
+export function Layout({ children }: LayoutProps) {
+  const router = useRouter();
+
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+
+  const handleMenuClick = ({ key }: { key: string }) => {
+    router.push(key);
+  };
+
+  return (
+    <>
+    
+    <main className={styles.main}></main>
+    <AntdLayout>
+      <Header className={styles.header}>
+        <Image
+          className={styles.logo}
+          src="/logo.svg"
+          alt="logo"
+          width={30}
+          height={30}
+        />
+        三木图书管理系统
+        <span className={styles.user}>
+          <Dropdown menu={{ items: USER_TIENM }}>
+            <a onClick={(e) => e.preventDefault()}>
+              <Space>
+                用户名
+                <DownOutlined />
+              </Space>
+            </a>
+          </Dropdown>
+        </span>
+      </Header>
+
+      <div style={{ padding: "0 48px" }}>
+        {/* 面包屑 */}
+        {/* <Breadcrumb
+          style={{ margin: "16px 0" }}
+          items={[{ title: "Home" }, { title: "List" }, { title: "App" }]}
+        /> */}
+        <AntdLayout
+          style={{
+            padding: "24px 0",
+            background: colorBgContainer,
+            borderRadius: borderRadiusLG,
+          }}
+        >
+          <Sider style={{ background: colorBgContainer }} width={200}>
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={["/book"]}
+              defaultOpenKeys={["book"]}
+              style={{ height: "100%" }}
+              items={ITEMS}
+              onClick={handleMenuClick}
+            />
+          </Sider>
+          <Content style={{ padding: "0 24px", minHeight: 280 }}>
+            {children} {/* 显示传递进来的页面内容 */}
+          </Content>
+        </AntdLayout>
+      </div>
+      <Footer style={{ textAlign: "center" }}>
+        Ant Design ©{new Date().getFullYear()}
+      </Footer>
+    </AntdLayout>
+    </>
+  );
+}
