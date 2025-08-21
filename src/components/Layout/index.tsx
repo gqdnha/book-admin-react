@@ -119,7 +119,7 @@ export function Layout({ children }: { children: ReactNode }) {
             <AntdLayout className={styles.sectionContent}>
               <Content
                 className={styles.content}
-                style={{ padding: "0 24px", minHeight: 280 }}
+                // style={{ padding: "24px 24px", minHeight: 280 }}
               >
                 {children}
               </Content>
