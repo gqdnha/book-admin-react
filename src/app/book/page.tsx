@@ -146,7 +146,12 @@ export default function Home() {
   });
   const handleTableChange = (pagination: TablePaginationConfig) => {
     console.log(pagination, "分页器");
-    setPagination(pagination);
+    setPagination({
+      current: pagination.current ?? 1,
+      pageSize: pagination.pageSize ?? 10,
+      showSizeChanger: typeof pagination.showSizeChanger === "boolean" ? pagination.showSizeChanger : true,
+      total: pagination.total ?? data.length,
+    });
   };
   // 搜索操作
   const handlesearchFinsh = (values: unknown) => {
