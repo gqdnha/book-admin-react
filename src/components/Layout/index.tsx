@@ -1,6 +1,6 @@
 "use client"; // 添加客户端组件标记
 import styles from "./index.module.css";
-import React from "react";
+import React, { ReactNode } from "react";
 import { DownOutlined, SettingOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import Image from "next/image";
@@ -56,87 +56,80 @@ const ITEMS = [
 const USER_TIENM: MenuProps["items"] = [
   {
     label: "用户中心",
-    key: '1',
+    key: "1",
   },
   {
-    type: 'divider',
+    type: "divider",
   },
   {
-    label: '登出',
-    key: '2',
+    label: "登出",
+    key: "2",
     // disabled: true,
   },
 ];
 
-export function Layout({ children }: LayoutProps) {
+// export function Layout({ children }: LayoutProps) {
+export function Layout({ children }: { children: ReactNode }) {
   const router = useRouter();
 
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
-
-  const handleMenuClick = ({ key }: { key: string }) => {
+  /* const handleMenuClick = ({ key }: { key: string }) => {
+    router.push(key);
+  }; */
+  const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
     router.push(key);
   };
 
   return (
     <>
-    
-    <main className={styles.main}></main>
-    <AntdLayout>
-      <Header className={styles.header}>
-        <Image
-          className={styles.logo}
-          src="/logo.svg"
-          alt="logo"
-          width={30}
-          height={30}
-        />
-        三木图书管理系统
-        <span className={styles.user}>
-          <Dropdown menu={{ items: USER_TIENM }}>
-            <a onClick={(e) => e.preventDefault()}>
-              <Space>
-                用户名
-                <DownOutlined />
-              </Space>
-            </a>
-          </Dropdown>
-        </span>
-      </Header>
+      <main className={styles.main}></main>
+      <AntdLayout>
+        <Header className={styles.header}>
+          <Image
+            className={styles.logo}
+            src="/logo.svg"
+            alt="logo"
+            width={30}
+            height={30}
+          />
+          三木图书管理系统
+          <span className={styles.user}>
+            <Dropdown menu={{ items: USER_TIENM }}>
+              <a onClick={(e) => e.preventDefault()}>
+                <Space>
+                  用户名
+                  <DownOutlined />
+                </Space>
+              </a>
+            </Dropdown>
+          </span>
+        </Header>
 
-      <div style={{ padding: "0 48px" }}>
-        {/* 面包屑 */}
-        {/* <Breadcrumb
-          style={{ margin: "16px 0" }}
-          items={[{ title: "Home" }, { title: "List" }, { title: "App" }]}
-        /> */}
-        <AntdLayout
-          style={{
-            padding: "24px 0",
-            background: colorBgContainer,
-            borderRadius: borderRadiusLG,
-          }}
-        >
-          <Sider style={{ background: colorBgContainer }} width={200}>
-            <Menu
-              mode="inline"
-              defaultSelectedKeys={["/book"]}
-              defaultOpenKeys={["book"]}
-              style={{ height: "100%" }}
-              items={ITEMS}
-              onClick={handleMenuClick}
-            />
-          </Sider>
-          <Content style={{ padding: "0 24px", minHeight: 280 }}>
-            {children} {/* 显示传递进来的页面内容 */}
-          </Content>
-        </AntdLayout>
-      </div>
-      <Footer style={{ textAlign: "center" }}>
-        Ant Design ©{new Date().getFullYear()}
-      </Footer>
-    </AntdLayout>
+        <div style={{ padding: "0 48px" }}>
+          <AntdLayout className={styles.sectionInner}>
+            <Sider width={200}>
+              <Menu
+                mode="inline"
+                defaultSelectedKeys={["/book"]}
+                defaultOpenKeys={["book"]}
+                style={{ height: "100%" }}
+                items={ITEMS}
+                onClick={handleMenuClick}
+              />
+            </Sider>
+            <AntdLayout className={styles.sectionContent}>
+              <Content
+                className={styles.content}
+                style={{ padding: "0 24px", minHeight: 280 }}
+              >
+                {children}
+              </Content>
+            </AntdLayout>
+          </AntdLayout>
+        </div>
+        {/* <Footer style={{ textAlign: "center" }}>
+          Ant Design ©{new Date().getFullYear()}
+        </Footer> */}
+      </AntdLayout>
     </>
   );
 }
