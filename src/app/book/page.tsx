@@ -113,6 +113,7 @@ export default function Home() {
   // 清空操作
   const handleSearchReset = () => {
     form.resetFields(); // 只执行重置逻辑
+    handleSearchFinsh({})
   };
   // 编辑操作
   const handleBookEdit = (row: unknown) => {
