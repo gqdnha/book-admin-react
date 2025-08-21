@@ -2,7 +2,6 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "./page.module.css"; // 引入样式文件
-import axios from "axios";
 import {
   Button,
   Col,
@@ -17,6 +16,8 @@ import {
   Tooltip,
 } from "antd";
 import dayjs from "dayjs";
+import { getBookList } from "@/api/book";
+import { BookQueryType } from "@/type";
 
 // import { title } from "process";
 
@@ -83,13 +84,11 @@ export default function Home() {
   const [data, setdata] = useState([]);
   // 请求数据
   useEffect(() => {
+    
     async function fetchData() {
-      const res = await axios.get(
-        "https://mock.apifox.cn/m1/2398938-0-default/api/books"
-      );
-      // console.log(res, "图书列表");
-      const { data } = res.data;
-      console.log(data, "图书列表数据");
+      const res = await getBookList({current:1,pageSize:pagination.pageSize});
+      const {data} = res
+      console.log(res,'123')
       setdata(data);
     }
     fetchData();
@@ -104,8 +103,12 @@ export default function Home() {
   });
 
   // 搜索操作
-  const handlesearchFinsh = (values: unknown) => {
-    console.log(values, "搜索结果");
+  const handleSearchFinsh = async (values: BookQueryType) => {
+    // console.log(values, "搜索结果");
+    const res = await getBookList({...values,current:1,pageSize:pagination.pageSize})
+    console.log(res.data, "搜索结果");
+    setdata(res.data);
+    setPagination({...pagination, current: 1, total: res.total || res.data.length });
   };
   // 清空操作
   const handleSearchReset = () => {
@@ -128,6 +131,12 @@ export default function Home() {
           : true,
       total: pagination.total ?? data.length,
     });
+    const query = form.getFieldsValue()
+    getBookList({
+      current: pagination.current,
+      pageSize: pagination.pageSize,
+      ...query, // 保持查询条件
+    })
   };
   // 表格-操作列
   const columns = [
@@ -157,7 +166,7 @@ export default function Home() {
       <Form
         name="customized_form_controls"
         // layout="inline"
-        onFinish={handlesearchFinsh}
+        onFinish={handleSearchFinsh}
         initialValues={{
           name: "",
           author: "",
