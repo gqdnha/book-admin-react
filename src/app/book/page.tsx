@@ -1,18 +1,23 @@
 "use client";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import styles from "./page.module.css"; // 引入样式文件
+import axios from "axios";
 import {
   Button,
   Col,
   Form,
+  Image,
   Input,
   Row,
   Select,
   Space,
   Table,
   TablePaginationConfig,
+  Tooltip,
 } from "antd";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import styles from "./page.module.css"; // 引入样式文件
+import dayjs from "dayjs";
+
 // import { title } from "process";
 
 const COLUMNS = [
@@ -20,123 +25,76 @@ const COLUMNS = [
     title: "名称",
     dataIndex: "name",
     key: "name",
+    width: 200,
   },
   {
     title: "封面",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "cover",
+    key: "cover",
+    width: 120,
+    render: (text: string) => {
+      return <Image width={50} src={text} alt="" />;
+    },
   },
   {
     title: "作者",
-    dataIndex: "address",
-    key: "address",
+    dataIndex: "author",
+    key: "author",
+    width: 120,
   },
   {
     title: "分类",
-    dataIndex: "tags",
-    key: "tags",
+    dataIndex: "category",
+    key: "category",
+    width: 80,
   },
   {
     title: "描述",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "description",
+    key: "description",
+    ellipsis: true, // 超出省略号
+    width: 200,
+    render: (text: string) => {
+      return (
+        <Tooltip title={text} placement="topLeft">
+          {text}
+        </Tooltip>
+      );
+    },
   },
   {
     title: "库存",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "stock",
+    key: "stock",
+    width: 80,
   },
   {
     title: "创建时间",
-    dataIndex: "age",
-    key: "age",
-  },
-];
-
-const data = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-  },
-  {
-    key: "4",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-  },
-  {
-    key: "5",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-  },
-  {
-    key: "6",
-    name: "Joe Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-  },
-  {
-    key: "7",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-  },
-  {
-    key: "8",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-  },
-  {
-    key: "9",
-    name: "Joe Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-  },
-  {
-    key: "10",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-  },
-  {
-    key: "11",
-    name: "Jim Green11",
-    age: 42,
-    address: "London No. 1 Lake Park",
-  },
-  {
-    key: "12",
-    name: "Joe Black12",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-  },
-  {
-    key: "13",
-    name: "John Brown13",
-    age: 32,
-    address: "New York No. 1 Lake Park",
+    dataIndex: "createTime",
+    key: "createTime",
+    render: (text: string) => dayjs(text).format("YYYY-MM-DD"),
+    width: 130,
   },
 ];
 
 export default function Home() {
   const [form] = Form.useForm();
   const router = useRouter();
+  const [data, setdata] = useState([]);
+  // 请求数据
+  useEffect(() => {
+    async function fetchData() {
+      const res = await axios.get(
+        "https://mock.apifox.cn/m1/2398938-0-default/api/books"
+      );
+      // console.log(res, "图书列表");
+      const { data } = res.data;
+      console.log(data, "图书列表数据");
+      setdata(data);
+    }
+    fetchData();
+  }, []);
+
   // 分页器
   const [pagination, setPagination] = useState({
     current: 1,
@@ -144,20 +102,11 @@ export default function Home() {
     showSizeChanger: true,
     total: data.length,
   });
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    console.log(pagination, "分页器");
-    setPagination({
-      current: pagination.current ?? 1,
-      pageSize: pagination.pageSize ?? 10,
-      showSizeChanger: typeof pagination.showSizeChanger === "boolean" ? pagination.showSizeChanger : true,
-      total: pagination.total ?? data.length,
-    });
-  };
+
   // 搜索操作
   const handlesearchFinsh = (values: unknown) => {
     console.log(values, "搜索结果");
   };
-
   // 清空操作
   const handleSearchReset = () => {
     form.resetFields(); // 只执行重置逻辑
@@ -166,6 +115,19 @@ export default function Home() {
   const handleBookEdit = (row: unknown) => {
     console.log(row, "编辑");
     router.push("/book/add");
+  };
+  // 表格改变
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    console.log(pagination, "分页器");
+    setPagination({
+      current: pagination.current ?? 1,
+      pageSize: pagination.pageSize ?? 10,
+      showSizeChanger:
+        typeof pagination.showSizeChanger === "boolean"
+          ? pagination.showSizeChanger
+          : true,
+      total: pagination.total ?? data.length,
+    });
   };
   // 表格-操作列
   const columns = [
