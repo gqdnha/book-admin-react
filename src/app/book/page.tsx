@@ -1,6 +1,18 @@
 "use client";
-import { Button, Col, Form, Input, Row, Select, Space, Table } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  Row,
+  Select,
+  Space,
+  Table,
+  TablePaginationConfig,
+} from "antd";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import styles from "./page.module.css"; // 引入样式文件
 // import { title } from "process";
 
 const COLUMNS = [
@@ -124,7 +136,18 @@ const data = [
 
 export default function Home() {
   const [form] = Form.useForm();
-  const router = useRouter()
+  const router = useRouter();
+  // 分页器
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    showSizeChanger: true,
+    total: data.length,
+  });
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    console.log(pagination, "分页器");
+    setPagination(pagination);
+  };
   // 搜索操作
   const handlesearchFinsh = (values: unknown) => {
     console.log(values, "搜索结果");
@@ -137,9 +160,9 @@ export default function Home() {
   // 编辑操作
   const handleBookEdit = (row: unknown) => {
     console.log(row, "编辑");
-    router.push('/book/add')
+    router.push("/book/add");
   };
-
+  // 表格-操作列
   const columns = [
     ...COLUMNS,
     {
@@ -216,7 +239,18 @@ export default function Home() {
       </Form>
 
       {/* 表格 */}
-      <Table columns={columns} dataSource={data} scroll={{ x: 1000 }} />
+      <div className={styles.tableWrap}>
+        <Table
+          columns={columns}
+          dataSource={data}
+          scroll={{ x: 1000 }} // 设置表格的滚动
+          onChange={handleTableChange}
+          pagination={{
+            ...pagination,
+            showTotal: () => `共${pagination.total} 条`,
+          }}
+        />
+      </div>
     </>
   );
 }
