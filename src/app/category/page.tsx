@@ -13,6 +13,7 @@ import {
   Space,
   Table,
   TablePaginationConfig,
+  Tag,
   Tooltip,
 } from "antd";
 import dayjs from "dayjs";
@@ -43,15 +44,19 @@ const COLUMNS = [
     dataIndex: "level",
     key: "level",
     width: 120,
-    render: (text: string) => {
-      return <Image width={50} src={text} alt="" />;
+    render: (text: Number) => {
+      return <Tag color={text === 1 ? "green" : "cyan"}>{`级别${text}`}</Tag>
     },
   },
   {
     title: "所属分类",
-    dataIndex: "author",
-    key: "author",
+    dataIndex: "parent",
+    key: "parent",
     width: 120,
+    render:(text:{name:string}) => {
+      return text.name ?? "-"
+    }
+
   },
   {
     title: "创建时间",
