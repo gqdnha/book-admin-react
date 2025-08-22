@@ -18,6 +18,7 @@ import {
 import dayjs from "dayjs";
 import { getBookList } from "@/api/book";
 import { BookQueryType } from "@/type";
+import Content from "@/components/Content";
 
 // import { title } from "process";
 
@@ -163,7 +164,7 @@ export default function Home() {
   ];
 
   return (
-    <>
+    <Content title="图书列表">
       <Form
         name="customized_form_controls"
         // layout="inline"
@@ -228,6 +229,6 @@ export default function Home() {
           }}
         />
       </div>
-    </>
+    </Content>
   );
 }
