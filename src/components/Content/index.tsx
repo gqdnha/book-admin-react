@@ -9,13 +9,13 @@ export default function Content({
   operation?: React.ReactNode;
 }) {
   return (
-    <div>
+    <>
       <div className={styles.title}>
         {title}
         <span className={styles.btn}> {operation} </span>
       </div>
 
       <div className={styles.content}>{children}</div>
-    </div>
+    </>
   );
 }
