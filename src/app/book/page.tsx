@@ -8,6 +8,7 @@ import {
   Form,
   Image,
   Input,
+  message,
   Row,
   Select,
   Space,
@@ -16,7 +17,7 @@ import {
   Tooltip,
 } from "antd";
 import dayjs from "dayjs";
-import { getBookList } from "@/api/book";
+import { bookDelete, getBookList } from "@/api/book";
 import { BookQueryType } from "@/type";
 import Content from "@/components/Content";
 
@@ -83,16 +84,19 @@ export default function Home() {
   const [form] = Form.useForm();
   const router = useRouter();
   const [data, setdata] = useState([]);
+  async function fetchData(search:BookQueryType) {
+    const res = await getBookList({
+      current: pagination.current,
+      pageSize: pagination.pageSize,
+      ...search
+    });
+    const { data } = res;
+    console.log(res, "123");
+    setdata(data);
+  }
   // 请求数据
   useEffect(() => {
-    
-    async function fetchData() {
-      const res = await getBookList({current:1,pageSize:pagination.pageSize});
-      const {data} = res
-      console.log(res,'123')
-      setdata(data);
-    }
-    fetchData();
+    fetchData({});
   }, []);
 
   // 分页器
@@ -106,15 +110,23 @@ export default function Home() {
   // 搜索操作
   const handleSearchFinsh = async (values: BookQueryType) => {
     // console.log(values, "搜索结果");
-    const res = await getBookList({...values,current:1,pageSize:pagination.pageSize})
+    const res = await getBookList({
+      ...values,
+      current: 1,
+      pageSize: pagination.pageSize,
+    });
     console.log(res.data, "搜索结果");
     setdata(res.data);
-    setPagination({...pagination, current: 1, total: res.total || res.data.length });
+    setPagination({
+      ...pagination,
+      current: 1,
+      total: res.total || res.data.length,
+    });
   };
   // 清空操作
   const handleSearchReset = () => {
     form.resetFields(); // 只执行重置逻辑
-    handleSearchFinsh({})
+    handleSearchFinsh({});
   };
   // 编辑操作
   const handleBookEdit = (row: unknown) => {
@@ -133,12 +145,19 @@ export default function Home() {
           : true,
       total: pagination.total ?? data.length,
     });
-    const query = form.getFieldsValue()
+    const query = form.getFieldsValue();
     getBookList({
       current: pagination.current,
       pageSize: pagination.pageSize,
       ...query, // 保持查询条件
-    })
+    });
+  };
+  // 删除
+  const handleBookDelete = (id: string) => {
+    bookDelete(id).then((res) => {
+      message.success("删除成功");
+      fetchData(form.getFieldsValue()); // 重新获取数据
+    });
   };
   // 表格-操作列
   const columns = [
@@ -153,7 +172,7 @@ export default function Home() {
               <Button type="link" onClick={handleBookEdit}>
                 编辑
               </Button>
-              <Button type="link" danger>
+              <Button type="link" danger onClick={()=>handleBookDelete(row._id)}>
                 删除
               </Button>
             </Space>
@@ -164,10 +183,19 @@ export default function Home() {
   ];
 
   return (
-    <Content title="图书列表" operation={ <Button type="primary" onClick={ () => {
-        router.push("/book/add");
-      }}>添加</Button>}>
-      
+    <Content
+      title="图书列表"
+      operation={
+        <Button
+          type="primary"
+          onClick={() => {
+            router.push("/book/add");
+          }}
+        >
+          添加
+        </Button>
+      }
+    >
       <Form
         name="customized_form_controls"
         // layout="inline"
