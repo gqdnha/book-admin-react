@@ -12,20 +12,27 @@ import {
   Select,
   Space,
   Image,
+  message,
 } from "antd";
+import { bookAdd } from "@/api/book";
+import { BookType } from "@/type";
+import { useRouter } from "next/navigation";
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
 export default function BookForm() {
-  const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
+  // const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
 
 //   用于封面预览
   const [preview, setPreview] = useState("");
 //   获取表单实例
   const [form] = Form.useForm();
-  const handleFinish = (values) => {
-    console.log(values);
+  const router = useRouter();
+  const handleFinish = async (values: BookType) => {
+    await bookAdd(values);
+    message.success("添加成功");
+    router.push("/book");
   }
   return (
     <>
