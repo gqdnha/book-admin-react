@@ -1,18 +1,14 @@
 "use client"; // 添加客户端组件标记
 import styles from "./index.module.css";
 import React, { ReactNode } from "react";
-import { DownOutlined, SettingOutlined } from "@ant-design/icons";
+import { DownOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import Image from "next/image";
-import { Space, Layout as AntdLayout, Menu, theme, Dropdown } from "antd";
-import { useRouter } from "next/navigation";
+import { Space, Layout as AntdLayout, Menu, Dropdown } from "antd";
+import { useRouter, usePathname } from "next/navigation";
 
-// 定义 Layout 组件的 Props 类型
-interface LayoutProps {
-  children: React.ReactNode;
-}
 
-const { Header, Content, Footer, Sider } = AntdLayout;
+const { Header, Content, Sider } = AntdLayout;
 
 // 左侧导航栏内容
 const ITEMS = [
@@ -71,6 +67,7 @@ const USER_TIENM: MenuProps["items"] = [
 // export function Layout({ children }: LayoutProps) {
 export function Layout({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
 
   /* const handleMenuClick = ({ key }: { key: string }) => {
     router.push(key);
@@ -78,6 +75,8 @@ export function Layout({ children }: { children: ReactNode }) {
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
     router.push(key);
   };
+
+  const activeMenu = pathname;
 
   return (
     <>
@@ -111,6 +110,7 @@ export function Layout({ children }: { children: ReactNode }) {
                 mode="inline"
                 defaultSelectedKeys={["/book"]}
                 defaultOpenKeys={["book"]}
+                selectedKeys={[activeMenu]}
                 style={{ height: "100%" }}
                 items={ITEMS}
                 onClick={handleMenuClick}
