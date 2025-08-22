@@ -129,9 +129,9 @@ export default function Home() {
     handleSearchFinsh({});
   };
   // 编辑操作
-  const handleBookEdit = (row: unknown) => {
-    console.log(row, "编辑");
-    router.push("/book/edit/id");
+  const handleBookEdit = (id: string) => {
+    console.log(id, "编辑");
+    router.push(`/book/edit/${id}`);
   };
   // 表格改变
   const handleTableChange = (pagination: TablePaginationConfig) => {
@@ -169,7 +169,7 @@ export default function Home() {
         return (
           <>
             <Space>
-              <Button type="link" onClick={handleBookEdit}>
+              <Button type="link" onClick={() => handleBookEdit(row._id)}>
                 编辑
               </Button>
               <Button type="link" danger onClick={()=>handleBookDelete(row._id)}>
