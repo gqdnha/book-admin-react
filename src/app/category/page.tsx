@@ -107,6 +107,7 @@ export default function Home() {
       ...pagination,
       current: 1,
       total: res.total || res.data.length,
+
     });
   };
   // 删除操作
@@ -118,6 +119,7 @@ export default function Home() {
       okText: "确定",
       cancelText: "取消",
       async onOk() {
+        // 对应 网课 分类管理-列表 第14节课
         await categoryDelete(_id);
         message.success("删除成功");
         fetchData(form.getFieldsValue()); // 重新获取数据
