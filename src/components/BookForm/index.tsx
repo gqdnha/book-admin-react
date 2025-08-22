@@ -17,28 +17,29 @@ import {
 import { bookAdd } from "@/api/book";
 import { BookType } from "@/type";
 import { useRouter } from "next/navigation";
-
+import Styles from "./index.module.css";
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
 export default function BookForm() {
   // const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
 
-//   用于封面预览
+  //   用于封面预览
   const [preview, setPreview] = useState("");
-//   获取表单实例
+  //   获取表单实例
   const [form] = Form.useForm();
   const router = useRouter();
   const handleFinish = async (values: BookType) => {
     await bookAdd(values);
     message.success("添加成功");
     router.push("/book");
-  }
+  };
   return (
     <>
       <Form
+        className={Styles.form}
         labelCol={{ span: 4 }}
-        wrapperCol={{ span: 14 }}
+        wrapperCol={{ span: 20 }}
         layout="horizontal"
         style={{ maxWidth: 600 }}
         onFinish={handleFinish}
@@ -67,10 +68,10 @@ export default function BookForm() {
           </Select>
         </Form.Item>
         <Form.Item label="封面" name="cover">
-          <Input.Group>
-            <Space>
+          <Input.Group compact>
               <Input
                 placeholder="请输入"
+                style={{ width: "calc(100% - 64px)" }}
                 onChange={(e) => {
                   form.setFieldValue("cover", e.target.value);
                 }}
@@ -83,7 +84,6 @@ export default function BookForm() {
               >
                 预览
               </Button>
-            </Space>
           </Input.Group>
         </Form.Item>
         {preview && (
@@ -101,8 +101,15 @@ export default function BookForm() {
         <Form.Item label="描述" name="description">
           <TextArea rows={4} placeholder="请输入..." />
         </Form.Item>
-        <Form.Item label="Button">
-          <Button htmlType="submit">创建</Button>
+        <Form.Item label=" " colon={false}>
+          <Button
+            size="large"
+            type="primary"
+            htmlType="submit"
+            className={Styles.btn}
+          >
+            创建
+          </Button>
         </Form.Item>
       </Form>
     </>
