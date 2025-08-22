@@ -164,7 +164,10 @@ export default function Home() {
   ];
 
   return (
-    <Content title="图书列表">
+    <Content title="图书列表" operation={ <Button type="primary" onClick={ () => {
+        router.push("/book/add");
+      }}>添加</Button>}>
+      
       <Form
         name="customized_form_controls"
         // layout="inline"

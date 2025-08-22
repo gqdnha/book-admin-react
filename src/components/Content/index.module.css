@@ -9,3 +9,6 @@
     border-radius: 16px;
     padding: 24px;
 }
+.btn {
+    float: right;
+}
