@@ -13,3 +13,7 @@ export async function getCategoryList(params?: BookQueryType) {
 export async function categoryAdd(params: BookType) {
   return request.post("/api/categories",  params );
 }
+// 删除图书
+export async function categoryDelete(id: string) {
+  return request.delete(`/api/categories/${id}` );
+}

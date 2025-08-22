@@ -6,26 +6,26 @@ import {
   Button,
   Col,
   Form,
-  Image,
   Input,
+  message,
+  Modal,
   Row,
   Select,
   Space,
   Table,
   TablePaginationConfig,
   Tag,
-  Tooltip,
 } from "antd";
 import dayjs from "dayjs";
-import { getCategoryList } from "@/api/category";
+import { getCategoryList, categoryDelete } from "@/api/category";
 import { CategoryQueryType } from "@/type";
 import Content from "@/components/Content";
 
 // import { title } from "process";
 
 const LEVEL = {
-  ONE:1,
-  TWO:2
+  ONE: 1,
+  TWO: 2,
 };
 const LEVEL_OPTIONS = [
   { label: "一级分类", value: LEVEL.ONE },
@@ -45,7 +45,7 @@ const COLUMNS = [
     key: "level",
     width: 120,
     render: (text: Number) => {
-      return <Tag color={text === 1 ? "green" : "cyan"}>{`级别${text}`}</Tag>
+      return <Tag color={text === 1 ? "green" : "cyan"}>{`级别${text}`}</Tag>;
     },
   },
   {
@@ -53,10 +53,9 @@ const COLUMNS = [
     dataIndex: "parent",
     key: "parent",
     width: 120,
-    render:(text:{name:string}) => {
-      return text.name ?? "-"
-    }
-
+    render: (text: { name: string }) => {
+      return text.name ?? "-";
+    },
   },
   {
     title: "创建时间",
@@ -72,14 +71,17 @@ export default function Home() {
   const router = useRouter();
   const [data, setdata] = useState([]);
   // 请求数据
+  async function fetchData(values?: any) {
+    const res = await getCategoryList({
+      current: pagination.current,
+      pageSize: pagination.pageSize,
+      ...values
+    });
+    const { data } = res;
+    console.log(res, "123");
+    setdata(data);
+  }
   useEffect(() => {
-    
-    async function fetchData() {
-      const res = await getCategoryList({current:1,pageSize:pagination.pageSize});
-      const {data} = res
-      console.log(res,'123')
-      setdata(data);
-    }
     fetchData();
   }, []);
 
@@ -94,15 +96,40 @@ export default function Home() {
   // 搜索操作
   const handleSearchFinsh = async (values: CategoryQueryType) => {
     console.log(values, "搜索结果");
-    const res = await getCategoryList({...values,current:1,pageSize:pagination.pageSize})
+    const res = await getCategoryList({
+      ...values,
+      current: 1,
+      pageSize: pagination.pageSize,
+    });
     console.log(res.data, "搜索结果");
     setdata(res.data);
-    setPagination({...pagination, current: 1, total: res.total || res.data.length });
+    setPagination({
+      ...pagination,
+      current: 1,
+      total: res.total || res.data.length,
+    });
+  };
+  // 删除操作
+  const handleCategoryDelete = (row: { _id: string }) => {
+    const { _id } = row as { _id: string };
+    console.log(_id, "删除操作");
+    Modal.confirm({
+      title: "确认删除吗？",
+      okText: "确定",
+      cancelText: "取消",
+      async onOk() {
+        await categoryDelete(_id);
+        message.success("删除成功");
+        fetchData(form.getFieldsValue()); // 重新获取数据
+      },
+    });
+    console.log(_id, "删除操作1");
+
   };
   // 清空操作
   const handleSearchReset = () => {
     form.resetFields(); // 只执行重置逻辑
-    handleSearchFinsh({})
+    handleSearchFinsh({});
   };
   // 编辑操作
   const handleCategoryEdit = (row: unknown) => {
@@ -121,12 +148,12 @@ export default function Home() {
           : true,
       total: pagination.total ?? data.length,
     });
-    const query = form.getFieldsValue()
+    const query = form.getFieldsValue();
     getCategoryList({
       current: pagination.current,
       pageSize: pagination.pageSize,
       ...query, // 保持查询条件
-    })
+    });
   };
   // 表格-操作列
   const columns = [
@@ -141,7 +168,11 @@ export default function Home() {
               <Button type="link" onClick={handleCategoryEdit}>
                 编辑
               </Button>
-              <Button type="link" danger>
+              <Button
+                type="link"
+                danger
+                onClick={() => handleCategoryDelete(row)}
+              >
                 删除
               </Button>
             </Space>
@@ -152,10 +183,19 @@ export default function Home() {
   ];
 
   return (
-    <Content title="分类列表" operation={ <Button type="primary" onClick={ () => {
-        router.push("/category/add");
-      }}>添加</Button>}>
-      
+    <Content
+      title="分类列表"
+      operation={
+        <Button
+          type="primary"
+          onClick={() => {
+            router.push("/category/add");
+          }}
+        >
+          添加
+        </Button>
+      }
+    >
       <Form
         name="customized_form_controls"
         // layout="inline"
