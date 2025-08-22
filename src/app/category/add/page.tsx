@@ -1,9 +1,8 @@
 "use client"; // 添加客户端组件标记
+import CategoryForm from '@/components/categoryForm';
 
-import BookForm from '@/components/BookForm'
-
-export default function Home() {
+export default function CategoryAdd() {
   return (
-    <BookForm />
+    <CategoryForm title="分类添加"  />
   )
 }

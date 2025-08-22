@@ -8,7 +8,6 @@ import {
   Form,
   Input,
   message,
-  Modal,
   Row,
   Select,
   Space,
@@ -27,7 +26,7 @@ const LEVEL = {
   ONE: 1,
   TWO: 2,
 };
-const LEVEL_OPTIONS = [
+export const LEVEL_OPTIONS = [
   { label: "一级分类", value: LEVEL.ONE },
   { label: "二级分类", value: LEVEL.TWO },
 ];
@@ -138,9 +137,9 @@ export default function Home() {
     handleSearchFinsh({});
   };
   // 编辑操作
-  const handleCategoryEdit = (row: unknown) => {
-    console.log(row, "编辑");
-    router.push("/category/edit/id");
+  const handleCategoryEdit = (id:string) => {
+    console.log(id, "编辑");
+    router.push(`/category/edit/${id}`);
   };
   // 表格改变
   const handleTableChange = (pagination: TablePaginationConfig) => {
@@ -171,7 +170,7 @@ export default function Home() {
         return (
           <>
             <Space>
-              <Button type="link" onClick={handleCategoryEdit}>
+              <Button type="link" onClick={() => handleCategoryEdit(row._id)}>
                 编辑
               </Button>
               <Button
