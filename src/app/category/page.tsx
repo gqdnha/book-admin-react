@@ -16,11 +16,20 @@ import {
   Tooltip,
 } from "antd";
 import dayjs from "dayjs";
-import { getBookList } from "@/api/book";
-import { BookQueryType } from "@/type";
+import { getCategoryList } from "@/api/category";
+import { CategoryQueryType } from "@/type";
 import Content from "@/components/Content";
 
 // import { title } from "process";
+
+const LEVEL = {
+  ONE:1,
+  TWO:2
+};
+const LEVEL_OPTIONS = [
+  { label: "一级分类", value: LEVEL.ONE },
+  { label: "二级分类", value: LEVEL.TWO },
+];
 
 const COLUMNS = [
   {
@@ -61,7 +70,7 @@ export default function Home() {
   useEffect(() => {
     
     async function fetchData() {
-      const res = await getBookList({current:1,pageSize:pagination.pageSize});
+      const res = await getCategoryList({current:1,pageSize:pagination.pageSize});
       const {data} = res
       console.log(res,'123')
       setdata(data);
@@ -78,9 +87,9 @@ export default function Home() {
   });
 
   // 搜索操作
-  const handleSearchFinsh = async (values: BookQueryType) => {
-    // console.log(values, "搜索结果");
-    const res = await getBookList({...values,current:1,pageSize:pagination.pageSize})
+  const handleSearchFinsh = async (values: CategoryQueryType) => {
+    console.log(values, "搜索结果");
+    const res = await getCategoryList({...values,current:1,pageSize:pagination.pageSize})
     console.log(res.data, "搜索结果");
     setdata(res.data);
     setPagination({...pagination, current: 1, total: res.total || res.data.length });
@@ -91,9 +100,9 @@ export default function Home() {
     handleSearchFinsh({})
   };
   // 编辑操作
-  const handleBookEdit = (row: unknown) => {
+  const handleCategoryEdit = (row: unknown) => {
     console.log(row, "编辑");
-    router.push("/book/add");
+    router.push("/category/edit/id");
   };
   // 表格改变
   const handleTableChange = (pagination: TablePaginationConfig) => {
@@ -108,7 +117,7 @@ export default function Home() {
       total: pagination.total ?? data.length,
     });
     const query = form.getFieldsValue()
-    getBookList({
+    getCategoryList({
       current: pagination.current,
       pageSize: pagination.pageSize,
       ...query, // 保持查询条件
@@ -124,7 +133,7 @@ export default function Home() {
         return (
           <>
             <Space>
-              <Button type="link" onClick={handleBookEdit}>
+              <Button type="link" onClick={handleCategoryEdit}>
                 编辑
               </Button>
               <Button type="link" danger>
@@ -139,7 +148,7 @@ export default function Home() {
 
   return (
     <Content title="分类列表" operation={ <Button type="primary" onClick={ () => {
-        router.push("/book/add");
+        router.push("/category/add");
       }}>添加</Button>}>
       
       <Form
@@ -165,10 +174,7 @@ export default function Home() {
                 showSearch
                 allowClear
                 placeholder="请选择"
-                options={[
-                  { label: "分类1", value: "分类1" },
-                  { label: "分类2", value: "分类2" },
-                ]}
+                options={LEVEL_OPTIONS}
               />
             </Form.Item>
           </Col>

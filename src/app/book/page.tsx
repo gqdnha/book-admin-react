@@ -119,7 +119,7 @@ export default function Home() {
   // 编辑操作
   const handleBookEdit = (row: unknown) => {
     console.log(row, "编辑");
-    router.push("/book/add");
+    router.push("/book/edit/id");
   };
   // 表格改变
   const handleTableChange = (pagination: TablePaginationConfig) => {
