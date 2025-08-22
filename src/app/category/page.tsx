@@ -114,7 +114,7 @@ export default function Home() {
   const handleCategoryDelete = (row: { _id: string }) => {
     const { _id } = row as { _id: string };
     console.log(_id, "删除操作");
-    Modal.confirm({
+    /* Modal.confirm({
       title: "确认删除吗？",
       okText: "确定",
       cancelText: "取消",
@@ -124,6 +124,10 @@ export default function Home() {
         message.success("删除成功");
         fetchData(form.getFieldsValue()); // 重新获取数据
       },
+    }); */
+    categoryDelete(_id).then((res) => {
+      message.success("删除成功");
+      fetchData(form.getFieldsValue()); // 重新获取数据
     });
     console.log(_id, "删除操作1");
 
