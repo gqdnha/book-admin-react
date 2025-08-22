@@ -18,7 +18,7 @@ import { bookAdd } from "@/api/book";
 import { BookType } from "@/type";
 import { useRouter } from "next/navigation";
 import Styles from "./index.module.css";
-const { RangePicker } = DatePicker;
+import dayjs from "dayjs";
 const { TextArea } = Input;
 
 export default function BookForm() {
@@ -30,6 +30,9 @@ export default function BookForm() {
   const [form] = Form.useForm();
   const router = useRouter();
   const handleFinish = async (values: BookType) => {
+    if(values.publishAt) {
+      values.publishAt = dayjs(values.publishAt).valueOf()
+    }
     await bookAdd(values);
     message.success("添加成功");
     router.push("/book");
