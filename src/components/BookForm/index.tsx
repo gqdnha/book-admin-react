@@ -19,6 +19,7 @@ import { BookType } from "@/type";
 import { useRouter } from "next/navigation";
 import Styles from "./index.module.css";
 import dayjs from "dayjs";
+import Content from "../Content";
 const { TextArea } = Input;
 
 export default function BookForm() {
@@ -38,7 +39,7 @@ export default function BookForm() {
     router.push("/book");
   };
   return (
-    <>
+    <Content title="图书添加">
       <Form
         className={Styles.form}
         labelCol={{ span: 4 }}
@@ -115,6 +116,6 @@ export default function BookForm() {
           </Button>
         </Form.Item>
       </Form>
-    </>
+    </Content>
   );
 }
