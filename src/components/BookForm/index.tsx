@@ -22,7 +22,7 @@ import dayjs from "dayjs";
 import Content from "../Content";
 const { TextArea } = Input;
 
-export default function BookForm() {
+export default function BookForm({title}: { title: string }) {
   // const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
 
   //   用于封面预览
@@ -39,7 +39,7 @@ export default function BookForm() {
     router.push("/book");
   };
   return (
-    <Content title="图书添加">
+    <Content title={title}>
       <Form
         className={Styles.form}
         labelCol={{ span: 4 }}

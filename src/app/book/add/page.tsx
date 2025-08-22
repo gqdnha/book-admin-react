@@ -4,6 +4,6 @@ import BookForm from '@/components/BookForm'
 
 export default function Home() {
   return (
-    <BookForm />
+    <BookForm title="图书添加" />
   )
 }
