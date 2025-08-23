@@ -15,10 +15,10 @@ import {
   Tag,
 } from "antd";
 import dayjs from "dayjs";
-import { bookDelete, getBookList } from "@/api/book";
+import { getBookList } from "@/api/book";
 import { BookType, BorrowQueryType } from "@/type";
 import Content from "@/components/Content";
-import { getBorrowList } from "@/api/borrow";
+import { getBorrowList,borrowDelete } from "@/api/borrow";
 
 // import { title } from "process";
 // 状态列表
@@ -162,7 +162,7 @@ export default function Borrow() {
   };
   // 删除
   const handleBorrowDelete = (id: string) => {
-    bookDelete(id).then((res) => {
+    borrowDelete(id).then((res) => {
       message.success("删除成功");
       fetchData(form.getFieldsValue()); // 重新获取数据
     });
@@ -201,7 +201,7 @@ export default function Borrow() {
         <Button
           type="primary"
           onClick={() => {
-            router.push("/book/add");
+            router.push("/borrow/add");
           }}
         >
           添加
