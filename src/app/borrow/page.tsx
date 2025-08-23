@@ -16,7 +16,7 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import { getBookList } from "@/api/book";
-import { BookType, BorrowQueryType } from "@/type";
+import { BookType, BorrowQueryType, BorrowType } from "@/type";
 import Content from "@/components/Content";
 import { getBorrowList,borrowDelete } from "@/api/borrow";
 
@@ -80,7 +80,7 @@ export default function Borrow() {
       pageSize: pagination.pageSize,
       ...search,
     });
-    const newData = res.data.map((item) => ({
+    const newData = res.data.map((item:BorrowType) => ({
       ...item,
       bookName: item.book.name,
       borrowUser: item.user.nickName,
@@ -118,7 +118,7 @@ export default function Borrow() {
       current: 1,
       pageSize: pagination.pageSize,
     });
-    const newData = res.data.map((item) => ({
+    const newData = res.data.map((item:BorrowType) => ({
       ...item,
       bookName: item.book.name,
       borrowUser: item.user.nickName,

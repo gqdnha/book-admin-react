@@ -1,3 +1,5 @@
+import { BookType } from "./book";
+
 export interface BorrowQueryType {
     name?: string;
     author?: string;
@@ -7,11 +9,9 @@ export interface BorrowQueryType {
 }
 
 export interface BorrowType {
-    name: string;
-    author: string;
-    category: string;
-    cover: string;
-    publishAt: number;
-    stock: number;
-    description: string;
+    book:BookType;
+    borrowAt:number;
+    returnAt:number;
+    // TODO
+    user:any;
 }
