@@ -88,11 +88,12 @@ export default function Home() {
     const res = await getBookList({
       current: pagination.current,
       pageSize: pagination.pageSize,
-      ...search
+      ...search,
     });
     const { data } = res;
     console.log(res, "123");
     setdata(data);
+    setPagination({...pagination,total:res.total})
   }
   // 请求数据
   useEffect(() => {

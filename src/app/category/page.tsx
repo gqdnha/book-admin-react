@@ -79,6 +79,7 @@ export default function Home() {
     const { data } = res;
     console.log(res, "123");
     setdata(data);
+    setPagination({...pagination,total:res.total})
   }
   useEffect(() => {
     fetchData();
