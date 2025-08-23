@@ -1,13 +1,12 @@
-export interface BookQueryType {
+export interface BorrowQueryType {
     name?: string;
     author?: string;
     category?: string;
     current?: number;
     pageSize?: number;
-    all?: boolean; //如果存在获取所有数据
 }
 
-export interface BookType {
+export interface BorrowType {
     name: string;
     author: string;
     category: string;
@@ -15,5 +14,4 @@ export interface BookType {
     publishAt: number;
     stock: number;
     description: string;
-    _id?:string;
 }
