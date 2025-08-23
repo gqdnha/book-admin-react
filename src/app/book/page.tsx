@@ -18,8 +18,9 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import { bookDelete, getBookList } from "@/api/book";
-import { BookQueryType } from "@/type";
+import { BookQueryType, CategoryType } from "@/type";
 import Content from "@/components/Content";
+import { getCategoryList } from "@/api/category";
 
 // import { title } from "process";
 
@@ -82,8 +83,9 @@ const COLUMNS = [
 
 export default function Home() {
   const [form] = Form.useForm();
-  const router = useRouter();
   const [data, setdata] = useState([]);
+  const router = useRouter();
+  // 请求数据
   async function fetchData(search:BookQueryType) {
     const res = await getBookList({
       current: pagination.current,
@@ -98,7 +100,13 @@ export default function Home() {
   // 请求数据
   useEffect(() => {
     fetchData({});
+    getCategoryList({all:true}).then(res => {
+      console.log(res.data,'分类')
+      setCategoryList(res.data)
+    })
   }, []);
+  // 分类列表
+  const [categoryList, setCategoryList] = useState<CategoryType[]>([])
 
   // 分页器
   const [pagination, setPagination] = useState({
@@ -225,10 +233,7 @@ export default function Home() {
                 showSearch
                 allowClear
                 placeholder="请选择"
-                options={[
-                  { label: "分类1", value: "分类1" },
-                  { label: "分类2", value: "分类2" },
-                ]}
+                options={categoryList.map(item => ({label:item.name,value:item._id}) )}
               />
             </Form.Item>
           </Col>

@@ -1,8 +1,6 @@
 "use client"; // 添加客户端组件标记
-
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
 import {
   Button,
   DatePicker,
@@ -10,34 +8,42 @@ import {
   Input,
   InputNumber,
   Select,
-  Space,
   Image,
   message,
 } from "antd";
 import { bookAdd } from "@/api/book";
-import { BookType } from "@/type";
+import { BookType, CategoryType } from "@/type";
 import { useRouter } from "next/navigation";
 import Styles from "./index.module.css";
 import dayjs from "dayjs";
 import Content from "../Content";
+import { getCategoryList } from "@/api/category";
 const { TextArea } = Input;
 
-export default function BookForm({title}: { title: string }) {
+export default function BookForm({ title }: { title: string }) {
   // const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
 
   //   用于封面预览
   const [preview, setPreview] = useState("");
+  //   分类列表
+  const [categoryList, setCategoryList] = useState<CategoryType[]>([]);
   //   获取表单实例
   const [form] = Form.useForm();
   const router = useRouter();
   const handleFinish = async (values: BookType) => {
-    if(values.publishAt) {
-      values.publishAt = dayjs(values.publishAt).valueOf()
+    if (values.publishAt) {
+      values.publishAt = dayjs(values.publishAt).valueOf();
     }
     await bookAdd(values);
     message.success("添加成功");
     router.push("/book");
   };
+  // 初始化加载数据
+  useEffect(() => {
+    getCategoryList({ all: true }).then((res) => {
+      setCategoryList(res.data);
+    });
+  });
   return (
     <Content title={title}>
       <Form
@@ -67,27 +73,31 @@ export default function BookForm({title}: { title: string }) {
           name="category"
           rules={[{ required: true, message: "请选择分类" }]}
         >
-          <Select placeholder="请选择">
-            <Select.Option value="demo">Demo</Select.Option>
-          </Select>
+          <Select
+            placeholder="请选择"
+            options={categoryList.map((item) => ({
+              label: item.name,
+              value: item._id,
+            }))}
+          />
         </Form.Item>
         <Form.Item label="封面" name="cover">
           <Input.Group compact>
-              <Input
-                placeholder="请输入"
-                style={{ width: "calc(100% - 64px)" }}
-                onChange={(e) => {
-                  form.setFieldValue("cover", e.target.value);
-                }}
-              />
-              <Button
-                type="primary"
-                onClick={(e) => {
-                  setPreview(form.getFieldValue("cover"));
-                }}
-              >
-                预览
-              </Button>
+            <Input
+              placeholder="请输入"
+              style={{ width: "calc(100% - 64px)" }}
+              onChange={(e) => {
+                form.setFieldValue("cover", e.target.value);
+              }}
+            />
+            <Button
+              type="primary"
+              onClick={(e) => {
+                setPreview(form.getFieldValue("cover"));
+              }}
+            >
+              预览
+            </Button>
           </Input.Group>
         </Form.Item>
         {preview && (
