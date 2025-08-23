@@ -12,6 +12,7 @@ import {
   Space,
   Table,
   TablePaginationConfig,
+  Tag,
 } from "antd";
 import dayjs from "dayjs";
 import { bookDelete, getBookList } from "@/api/book";
@@ -29,8 +30,8 @@ const STATUS_OPTIONS = [
 const COLUMNS = [
   {
     title: "名称",
-    dataIndex: "name",
-    key: "name",
+    dataIndex: "bookName",
+    key: "bookName",
     width: 200,
   },
 
@@ -39,6 +40,12 @@ const COLUMNS = [
     dataIndex: "status",
     key: "status",
     width: 80,
+    render: (text: string) =>
+      text === "on" ? (
+        <Tag color="red">借出</Tag>
+      ) : (
+        <Tag color="green">归还</Tag>
+      ),
   },
   {
     title: "借阅人",
@@ -73,12 +80,16 @@ export default function Borrow() {
       pageSize: pagination.pageSize,
       ...search,
     });
-    const { data } = res;
-    setdata(data);
+    const newData = res.data.map((item) => ({
+      ...item,
+      bookName: item.book.name,
+      borrowUser: item.user.nickName,
+    }));
+    setdata(newData);
     setPagination({ ...pagination, total: res.total });
   }
   // 用户列表
-  // TODO 
+  // TODO
   const [userList, setUserList] = useState<any[]>([]);
   // 书籍列表
   const [bookList, setBookList] = useState<BookType[]>([]);
@@ -102,13 +113,18 @@ export default function Borrow() {
   // 搜索操作
   const handleSearchFinsh = async (values: BorrowQueryType) => {
     // console.log(values, "搜索结果");
-    const res = await getList({
+    const res = await getBorrowList({
       ...values,
       current: 1,
       pageSize: pagination.pageSize,
     });
-    console.log(res.data, "搜索结果");
-    setdata(res.data);
+    const newData = res.data.map((item) => ({
+      ...item,
+      bookName: item.book.name,
+      borrowUser: item.user.nickName,
+    }));
+    console.log(newData, "搜索结果");
+    setdata(newData);
     setPagination({
       ...pagination,
       current: 1,
@@ -138,7 +154,7 @@ export default function Borrow() {
       total: pagination.total ?? data.length,
     });
     const query = form.getFieldsValue();
-    getList({
+    getBorrowList({
       current: pagination.current,
       pageSize: pagination.pageSize,
       ...query, // 保持查询条件
