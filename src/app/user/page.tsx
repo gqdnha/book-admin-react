@@ -16,8 +16,8 @@ import {
   Tag,
 } from "antd";
 import dayjs from "dayjs";
-import { getCategoryList, categoryDelete } from "@/api/category";
-import { CategoryQueryType } from "@/type";
+import { getUserList, userDelete, userUpdate } from "@/api/user";
+import { UserQueryType } from "@/type";
 import Content from "@/components/Content";
 
 // import { title } from "process";
@@ -72,7 +72,7 @@ export default function Home() {
   const [data, setdata] = useState([]);
   // 请求数据
   async function fetchData(values?: any) {
-    const res = await getCategoryList({
+    const res = await getUserList({
       current: pagination.current,
       pageSize: pagination.pageSize,
       ...values,
@@ -95,9 +95,9 @@ export default function Home() {
   });
 
   // 搜索操作
-  const handleSearchFinsh = async (values: CategoryQueryType) => {
+  const handleSearchFinsh = async (values: UserQueryType) => {
     console.log(values, "搜索结果");
-    const res = await getCategoryList({
+    const res = await getUserList({
       ...values,
       current: 1,
       pageSize: pagination.pageSize,
@@ -111,7 +111,7 @@ export default function Home() {
     });
   };
   // 删除操作
-  const handleCategoryDelete = (row: { _id: string }) => {
+  const handleUserDelete = (row: { _id: string }) => {
     const { _id } = row as { _id: string };
     console.log(_id, "删除操作");
     /* Modal.confirm({
@@ -125,7 +125,7 @@ export default function Home() {
         fetchData(form.getFieldsValue()); // 重新获取数据
       },
     }); */
-    categoryDelete(_id).then((res) => {
+    userDelete(_id).then((res) => {
       message.success("删除成功");
       fetchData(form.getFieldsValue()); // 重新获取数据
     });
@@ -137,10 +137,11 @@ export default function Home() {
     handleSearchFinsh({});
   };
   // 编辑操作
-  const handleCategoryEdit = (id: string) => {
+  const handleUserEdit = (id: string) => {
     console.log(id, "编辑");
-    router.push(`/category/edit/${id}`);
+    router.push(`/user/edit/${id}`);
   };
+
   // 表格改变
   const handleTableChange = (pagination: TablePaginationConfig) => {
     console.log(pagination, "分页器");
@@ -154,11 +155,16 @@ export default function Home() {
       total: pagination.total ?? data.length,
     });
     const query = form.getFieldsValue();
-    getCategoryList({
+    getUserList({
       current: pagination.current,
       pageSize: pagination.pageSize,
       ...query, // 保持查询条件
     });
+  };
+  const handleStatusChange = async (row:any) => {
+    const status = row.status === STATUS.ON ? STATUS.OFF : STATUS.ON;
+    await userUpdate({ ...row, status });
+    fetchData(form.getFieldsValue());
   };
   // 表格-操作列
   const columns = [
@@ -170,21 +176,17 @@ export default function Home() {
         return (
           <>
             <Space>
-              <Button type="link" onClick={() => handleCategoryEdit(row._id)}>
+              <Button type="link" onClick={() => handleUserEdit(row._id)}>
                 编辑
               </Button>
               <Button
                 danger={row.status === STATUS.ON ? true : false}
                 type="link"
-                onClick={() => handleCategoryEdit(row._id)}
+                onClick={() => handleStatusChange(row)}
               >
                 {row.status === STATUS.ON ? "禁用" : "启用"}
               </Button>
-              <Button
-                type="link"
-                danger
-                onClick={() => handleCategoryDelete(row)}
-              >
+              <Button type="link" danger onClick={() => handleUserDelete(row)}>
                 删除
               </Button>
             </Space>
@@ -201,7 +203,7 @@ export default function Home() {
         <Button
           type="primary"
           onClick={() => {
-            router.push("/category/add");
+            router.push("/user/add");
           }}
         >
           添加
@@ -214,8 +216,7 @@ export default function Home() {
         onFinish={handleSearchFinsh}
         initialValues={{
           name: "",
-          author: "",
-          category: "",
+          status: "",
         }}
         form={form} // 注意这里需要关联form实例
       >
@@ -226,7 +227,7 @@ export default function Home() {
             </Form.Item>
           </Col>
           <Col span={5}>
-            <Form.Item name="level" label="状态">
+            <Form.Item name="status" label="状态">
               <Select
                 showSearch
                 allowClear
