@@ -1,9 +1,13 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import BorrowForm from "@/components/BorrowForm";
+
+
+
+export default function borrowAdd() {
+  
+
   return (
-    <div>
-      borrowadd
-    </div>
+    <BorrowForm  title="借阅添加" />
   );
 }

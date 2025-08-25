@@ -18,7 +18,7 @@ import dayjs from "dayjs";
 import { getBookList } from "@/api/book";
 import { BookType, BorrowQueryType, BorrowType } from "@/type";
 import Content from "@/components/Content";
-import { getBorrowList,borrowDelete } from "@/api/borrow";
+import { getBorrowList, borrowDelete } from "@/api/borrow";
 
 // import { title } from "process";
 // 状态列表
@@ -80,7 +80,7 @@ export default function Borrow() {
       pageSize: pagination.pageSize,
       ...search,
     });
-    const newData = res.data.map((item:BorrowType) => ({
+    const newData = res.data.map((item: BorrowType) => ({
       ...item,
       bookName: item.book.name,
       borrowUser: item.user.nickName,
@@ -118,7 +118,7 @@ export default function Borrow() {
       current: 1,
       pageSize: pagination.pageSize,
     });
-    const newData = res.data.map((item:BorrowType) => ({
+    const newData = res.data.map((item: BorrowType) => ({
       ...item,
       bookName: item.book.name,
       borrowUser: item.user.nickName,
@@ -177,9 +177,11 @@ export default function Borrow() {
         return (
           <>
             <Space>
-              <Button type="link" onClick={() => handleBorrowEdit(row._id)}>
-                编辑
-              </Button>
+              {row.status == 'on' && (
+                <Button type="link" onClick={() => handleBorrowEdit(row._id)}>
+                  归还
+                </Button>
+              )}
               <Button
                 type="link"
                 danger
