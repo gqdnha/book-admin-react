@@ -5,37 +5,41 @@ import { useRouter } from "next/navigation";
 import Styles from "./index.module.css";
 import Content from "../Content";
 import { userAdd } from "@/api/user";
+import { USER_SEX, USER_ROLE, USER_STATUS } from "@/constant/user";
+import { UserType } from "@/type";
 
 export default function UserForm({
   title,
   editData = {
-    sex: "male",
-    role:'user',
-    status:'on'
-  }
-}:{
+    sex: USER_SEX.MALE,
+    role: USER_ROLE.USER,
+    status: USER_STATUS.ON,
+  },
+}: {
   title: string;
-  editData: {
-    sex:"male" | "f",
-    role:"user"
-  } 
+  // Partial 可能会有userType的部分属性
+  editData?: Partial<UserType>;
 }) {
   //   获取表单实例
   const [form] = Form.useForm();
   const router = useRouter();
+  useEffect(() => {
+    if (editData._id) {
+      console.log("editData", editData);
+      form.setFieldsValue(editData);
+    }
+  }, [editData, form]);
   const handleFinish = async (values: UserType) => {
     console.log(values);
-    
+
     await userAdd(values);
     message.success("添加成功");
     router.push("/user");
   };
   // 初始化加载数据
-  useEffect(() => {
-   
-  });
+  useEffect(() => {});
   return (
-    <Content title="用户添加">
+    <Content title={title}>
       <Form
         form={form}
         initialValues={editData}
@@ -72,9 +76,7 @@ export default function UserForm({
         </Form.Item>
         <Form.Item label="密码" name="password">
           <Input.Group compact>
-            <Input.Password
-              placeholder="请输入"
-            />
+            <Input.Password placeholder="请输入" />
           </Input.Group>
         </Form.Item>
         <Form.Item label="状态" name="status">

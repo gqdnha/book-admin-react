@@ -7,6 +7,11 @@ import request from "@/utils/request";
 export async function getUserList(params?: UserQueryType) {
   return request.get(`/api/users?${qs.stringify(params)}`);
 }
+export async function getUserDetail(id: string) {
+  // 
+  console.log(id, "用户id");
+  return request.get(`/api/users/${id}`);
+}
 
 // 添加用户
 export async function userAdd(params: UserType) {
@@ -23,3 +28,4 @@ export async function userUpdate(params: UserType) {
   // return request.put(`/api/users/${params._id}`, params);
 
 }
+
