@@ -4,7 +4,7 @@ import { Button, Form, Input, message, Radio } from "antd";
 import { useRouter } from "next/navigation";
 import Styles from "./index.module.css";
 import Content from "../Content";
-import { userAdd } from "@/api/user";
+import { userAdd,userUpdate } from "@/api/user";
 import { USER_SEX, USER_ROLE, USER_STATUS } from "@/constant/user";
 import { UserType } from "@/type";
 
@@ -31,13 +31,16 @@ export default function UserForm({
   }, [editData, form]);
   const handleFinish = async (values: UserType) => {
     console.log(values);
-
-    await userAdd(values);
+    if(editData._id) {
+      await userUpdate(values);
+    } else {
+      await userAdd(values);
+    }
     message.success("添加成功");
     router.push("/user");
   };
   // 初始化加载数据
-  useEffect(() => {});
+
   return (
     <Content title={title}>
       <Form
