@@ -76,10 +76,11 @@ export function Layout({ children }: { children: ReactNode }) {
     router.push(key);
   };
 
-  const activeMenu = pathname;
-
+  // 添加路径判断逻辑，当访问首页时高亮图书列表
+  const activeMenu = pathname === '/' ? '/book' : pathname;
+  
   return (
-    <>
+    <> 
       <main className={styles.main}></main>
       <AntdLayout>
         <Header className={styles.header}>

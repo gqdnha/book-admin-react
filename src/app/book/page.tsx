@@ -81,7 +81,7 @@ const COLUMNS = [
   },
 ];
 
-export default function Home() {
+export default function Book() {
   const [form] = Form.useForm();
   const [data, setdata] = useState([]);
   const router = useRouter();
