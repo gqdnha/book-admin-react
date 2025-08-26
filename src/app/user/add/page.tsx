@@ -1,8 +1,8 @@
 "use client"; // 添加客户端组件标记
-import CategoryForm from '@/components/categoryForm';
+import UserForm from '@/components/UserForm';
 
 export default function CategoryAdd() {
   return (
-    <CategoryForm title="分类添加"  />
+    <UserForm title="用户添加"  />
   )
 }

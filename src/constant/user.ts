@@ -1,0 +1,16 @@
+sex: "male";
+role: "user";
+status: "active";
+
+export enum USER_SEX {
+  MALE = "male",
+  FEMALE = "female",
+}
+export enum USER_ROLE {
+  USER = "user",
+  ADMIN = "admin",
+}
+export enum STATUS {
+  ON = "on",
+  OFF = "off",
+}
